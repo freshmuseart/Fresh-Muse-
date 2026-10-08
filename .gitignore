@@ -1,0 +1,28 @@
+# build output
+dist/
+.astro/
+*.tsbuildinfo
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment — NOTHING social/OAuth related may ever be committed
+.env
+.env.local
+.env.production
+.env.*.local
+social/.oauth-state.json
+
+# command center runtime state (history + undo snapshots)
+command-center/.state/
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,65 @@
+# Deploy Fresh Muse to GitHub Pages
+#
+# NON-PROGRAMMER NOTE: you never need to run this by hand.
+# Push to `main` and GitHub builds + publishes the site automatically.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # allow manual runs from the Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build site
+        # SITE_URL / BASE_PATH are derived from the repository so the site
+        # keeps working if the repo is renamed (e.g. project pages sub-path).
+        run: |
+          OWNER="${{ github.repository_owner }}"
+          REPO="${{ github.event.repository.name }}"
+          if [ "$REPO" = "$OWNER.github.io" ]; then
+            BASE_PATH="/"
+          else
+            BASE_PATH="/$REPO"
+          fi
+          SITE_URL="https://$OWNER.github.io"
+          echo "Building for $SITE_URL$BASE_PATH"
+          SITE_URL="$SITE_URL" BASE_PATH="$BASE_PATH" bun run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

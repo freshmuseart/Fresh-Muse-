@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import { url } from '../../utils/url';
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('articles', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<BaseLayout
+  title="All Writing"
+  description="Every piece in the Fresh Muse journal — overlooked art, interiors, artists, collectible objects and art history."
+>
+  <section class="section page-hero">
+    <div class="wrap">
+      <p class="eyebrow">The journal</p>
+      <h1>All writing.</h1>
+      <p class="lede">
+        Everything published in Fresh Muse, newest first. Each piece stands alone — read in any
+        order, in any room.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      {
+        entries.length > 0 ? (
+          <div class="entry-grid">
+            {entries.map((entry) => (
+              <ArticleCard
+                title={entry.data.title}
+                description={entry.data.description}
+                category={entry.data.category}
+                date={entry.data.date}
+                slug={entry.id}
+              />
+            ))}
+          </div>
+        ) : (
+          <div class="empty-state">
+            <h2>The journal opens soon.</h2>
+            <p>New writing is being prepared. Subscribe below to hear when it arrives.</p>
+          </div>
+        )
+      }
+      <p class="back-link"><a href={url('/')}>← Back to the front page</a></p>
+    </div>
+  </section>
+
+  <Newsletter />
+</BaseLayout>
+
+<style>
+  .page-hero .wrap {
+    display: grid;
+    gap: 1.1rem;
+    max-width: 760px;
+  }
+
+  .page-hero h1 {
+    font-size: var(--step-4);
+  }
+
+  .section--tight {
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .entry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1rem, 2vw, 1.6rem);
+  }
+
+  .empty-state {
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+    text-align: center;
+    padding: clamp(3rem, 7vw, 5rem) var(--gutter);
+    border: 1px dashed var(--line-strong);
+    max-width: 640px;
+    margin-inline: auto;
+  }
+
+  .empty-state p {
+    color: var(--ink-muted);
+  }
+
+  .back-link {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    font-size: var(--step--1);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .back-link a {
+    color: var(--ink-muted);
+    text-decoration: none;
+  }
+
+  .back-link a:hover {
+    color: var(--gold);
+  }
+
+  @media (max-width: 900px) {
+    .entry-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .entry-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

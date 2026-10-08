@@ -1,0 +1,372 @@
+/* ==========================================================================
+   FRESH MUSE — global styles & design tokens
+   "An art journal after the gallery has closed."
+
+   To change the site's colors, type or spacing, edit the tokens below.
+   Everything else references these variables.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* --- night palette ---------------------------------------------------- */
+  --night-950: #04060d; /* near-black base */
+  --night-900: #070a14; /* deep midnight blue */
+  --night-850: #0a0e1c;
+  --night-800: #0e1324; /* charcoal panel */
+  --night-700: #141a30; /* raised panel */
+  --night-600: #1c2340; /* muted indigo */
+  --night-500: #262e52;
+
+  /* --- ink ---------------------------------------------------------------- */
+  --ink: #f2ede1; /* warm ivory */
+  --ink-soft: #ddd7c9; /* soft off-white */
+  --ink-muted: #9a978c; /* restrained gray */
+  --ink-faint: #6b6a64; /* faintest gray */
+
+  /* --- accents (use sparingly) -------------------------------------------- */
+  --gold: #c8a86a; /* muted gold */
+  --ochre: #b08d4f; /* aged ochre */
+  --amber: #d9a55e; /* warm amber */
+  --gold-dim: rgba(200, 168, 106, 0.35);
+  --gold-ghost: rgba(200, 168, 106, 0.12);
+
+  /* --- lines & shadows --------------------------------------------------- */
+  --line: rgba(242, 237, 225, 0.08);
+  --line-strong: rgba(242, 237, 225, 0.16);
+  --shadow-deep: 0 30px 80px rgba(0, 0, 0, 0.55);
+
+  /* --- type --------------------------------------------------------------- */
+  --font-display: 'Fraunces Variable', 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+
+  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.83rem);
+  --step-0: clamp(0.95rem, 0.92rem + 0.15vw, 1.03rem);
+  --step-1: clamp(1.12rem, 1.05rem + 0.35vw, 1.3rem);
+  --step-2: clamp(1.4rem, 1.25rem + 0.7vw, 1.85rem);
+  --step-3: clamp(1.8rem, 1.5rem + 1.4vw, 2.7rem);
+  --step-4: clamp(2.4rem, 1.8rem + 2.8vw, 4.2rem);
+  --step-5: clamp(3.2rem, 2.1rem + 5vw, 7rem);
+
+  /* --- layout -------------------------------------------------------------- */
+  --measure: 64ch;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --section-y: clamp(4rem, 9vw, 8.5rem);
+  --radius: 2px;
+
+  /* --- motion --------------------------------------------------------------- */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --speed: 420ms;
+}
+
+/* --- base ----------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  background-color: var(--night-950);
+  color: var(--ink-soft);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  font-weight: 300;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Atmospheric wash — faint indigo aurora behind everything.
+   Painterly night-sky energy without gradients in the UI itself. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -20%;
+  z-index: -2;
+  background:
+    radial-gradient(42% 36% at 18% 12%, rgba(38, 46, 82, 0.55), transparent 70%),
+    radial-gradient(36% 30% at 82% 8%, rgba(176, 141, 79, 0.1), transparent 70%),
+    radial-gradient(50% 45% at 70% 85%, rgba(28, 35, 64, 0.6), transparent 72%);
+  pointer-events: none;
+}
+
+/* Fine film grain, like paper under gallery light. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.05;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--gold-dim);
+  text-underline-offset: 0.28em;
+  text-decoration-thickness: 1px;
+  transition: color var(--speed) var(--ease), text-decoration-color var(--speed) var(--ease);
+}
+
+a:hover {
+  color: var(--gold);
+  text-decoration-color: var(--gold);
+}
+
+:focus-visible {
+  outline: 1px solid var(--gold);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--gold-dim);
+  color: var(--night-950);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 350;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+/* --- shared layout helpers --------------------------------------------------- */
+
+.wrap {
+  width: min(1180px, 100% - var(--gutter) * 2);
+  margin-inline: auto;
+}
+
+.wrap--narrow {
+  width: min(780px, 100% - var(--gutter) * 2);
+}
+
+.section {
+  padding-block: var(--section-y);
+  position: relative;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.eyebrow::before {
+  content: '';
+  width: 2.2em;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+.lede {
+  font-size: var(--step-1);
+  font-weight: 300;
+  color: var(--ink-muted);
+  max-width: var(--measure);
+}
+
+/* --- buttons --------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.85em 1.9em;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color var(--speed) var(--ease),
+    background-color var(--speed) var(--ease),
+    color var(--speed) var(--ease),
+    transform var(--speed) var(--ease);
+}
+
+.btn:hover {
+  border-color: var(--gold-dim);
+  background: var(--gold-ghost);
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+
+.btn--solid {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--night-950);
+}
+
+.btn--solid:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--night-950);
+}
+
+/* --- cards ----------------------------------------------------------------- */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.5rem, 3vw, 2.4rem);
+  background: linear-gradient(160deg, rgba(20, 26, 48, 0.72), rgba(10, 14, 28, 0.9));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  text-decoration: none;
+  overflow: hidden;
+  transition:
+    border-color var(--speed) var(--ease),
+    transform var(--speed) var(--ease),
+    background-color var(--speed) var(--ease);
+}
+
+.card:hover {
+  border-color: var(--gold-dim);
+  transform: translateY(-4px);
+  color: inherit;
+}
+
+/* faint horizon glow on hover */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: auto -30% -60% -30%;
+  height: 70%;
+  background: radial-gradient(50% 60% at 50% 100%, rgba(200, 168, 106, 0.14), transparent 75%);
+  opacity: 0;
+  transition: opacity var(--speed) var(--ease);
+  pointer-events: none;
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+/* --- prose (for article & legal pages) ------------------------------------- */
+
+.prose {
+  max-width: var(--measure);
+  font-size: var(--step-0);
+  color: var(--ink-soft);
+}
+
+.prose > * + * {
+  margin-top: 1.4em;
+}
+
+.prose h2 {
+  font-size: var(--step-2);
+  margin-top: 2.2em;
+}
+
+.prose h3 {
+  font-size: var(--step-1);
+  margin-top: 2em;
+}
+
+.prose a {
+  color: var(--gold);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.3em;
+}
+
+.prose li + li {
+  margin-top: 0.5em;
+}
+
+.prose blockquote {
+  border-left: 1px solid var(--gold-dim);
+  padding-left: 1.4em;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step-1);
+  color: var(--ink-muted);
+}
+
+.prose strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* --- utilities ---------------------------------------------------------------- */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

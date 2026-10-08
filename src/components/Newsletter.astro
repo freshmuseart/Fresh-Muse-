@@ -1,0 +1,149 @@
+---
+/**
+ * Newsletter — email signup band.
+ * Uses a plain HTML form; set `newsletterAction` in src/data/site.ts to
+ * connect any free form service (Buttondown, Mailchimp, etc.).
+ */
+import { site } from '../data/site';
+
+const action = site.newsletterAction;
+---
+
+<section class="newsletter" aria-labelledby="newsletter-title">
+  <div class="wrap newsletter__inner">
+    <div class="newsletter__copy">
+      <p class="eyebrow">The dispatch</p>
+      <h2 id="newsletter-title">Letters from the gallery, after hours.</h2>
+      <p class="lede">
+        One considered email every few weeks — new discoveries, overlooked artists and objects
+        worth living with. No noise, no selling.
+      </p>
+    </div>
+
+    <form class="newsletter__form" method="post" action={action || undefined} data-newsletter>
+      <label class="visually-hidden" for="newsletter-email">Email address</label>
+      <input
+        id="newsletter-email"
+        type="email"
+        name="email"
+        required
+        placeholder="your@email.com"
+        autocomplete="email"
+      />
+      <button class="btn btn--solid" type="submit">Subscribe</button>
+      <p class="newsletter__note" data-newsletter-note hidden>
+        {
+          action
+            ? 'Thank you — check your inbox to confirm.'
+            : 'Signup isn’t connected yet — the newsletter service will be added soon.'
+        }
+      </p>
+    </form>
+
+    <p class="newsletter__fine">
+      We respect your inbox. Unsubscribe any time. Read our
+      <a href="/privacy-policy">privacy policy</a>.
+    </p>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-newsletter]');
+  // NB: form.action returns the current URL when the attribute is absent,
+  // so test the attribute itself to detect an unconnected form.
+  if (form && !form.getAttribute('action')) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const note = form.querySelector<HTMLElement>('[data-newsletter-note]');
+      if (note) note.hidden = false;
+    });
+  }
+</script>
+
+<style>
+  .newsletter {
+    position: relative;
+    padding-block: var(--section-y);
+    border-block: 1px solid var(--line);
+    background:
+      radial-gradient(60% 90% at 85% 20%, rgba(200, 168, 106, 0.07), transparent 70%),
+      radial-gradient(50% 80% at 10% 90%, rgba(38, 46, 82, 0.5), transparent 70%),
+      var(--night-900);
+    overflow: hidden;
+  }
+
+  /* thin drifting curve echoing the night-sky motif */
+  .newsletter::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='300' viewBox='0 0 800 300'%3E%3Cpath d='M-20 220 C 180 120, 320 260, 520 160 S 820 60, 900 120' fill='none' stroke='%23c8a86a' stroke-opacity='0.14' stroke-width='1'/%3E%3Cpath d='M-20 260 C 200 180, 360 300, 560 210 S 830 120, 920 170' fill='none' stroke='%237d8cc4' stroke-opacity='0.12' stroke-width='1'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    pointer-events: none;
+  }
+
+  .newsletter__inner {
+    position: relative;
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem);
+    max-width: 720px;
+    text-align: center;
+    justify-items: center;
+  }
+
+  .newsletter__copy {
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+  }
+
+  .newsletter__copy .lede {
+    font-size: var(--step-0);
+  }
+
+  .newsletter__form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+    width: min(520px, 100%);
+  }
+
+  .newsletter__form input {
+    flex: 1 1 240px;
+    padding: 0.9em 1.3em;
+    background: rgba(4, 6, 13, 0.6);
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    transition: border-color var(--speed) var(--ease);
+  }
+
+  .newsletter__form input::placeholder {
+    color: var(--ink-faint);
+  }
+
+  .newsletter__form input:focus {
+    outline: none;
+    border-color: var(--gold-dim);
+  }
+
+  .newsletter__note {
+    flex-basis: 100%;
+    font-size: var(--step--1);
+    color: var(--gold);
+  }
+
+  .newsletter__fine {
+    font-size: var(--step--1);
+    color: var(--ink-faint);
+  }
+
+  .newsletter__fine a {
+    color: var(--ink-muted);
+  }
+</style>

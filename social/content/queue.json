@@ -1,0 +1,51 @@
+{
+  "posts": [
+    {
+      "id": "ig-quiet-rooms-001",
+      "title": "The room was designed around one painting",
+      "caption": "Some rooms are built around a view. This one was built around a canvas. A quiet look at how a single work can set the temperature of an entire space. — Fresh Muse",
+      "media": [
+        {
+          "kind": "image",
+          "url": "https://freshmuseart.github.io/og.png",
+          "alt": "Generated Fresh Muse artwork: flowing night-wind curves and distant lights"
+        }
+      ],
+      "platform": "instagram",
+      "scheduledFor": "2026-12-01T09:00:00Z",
+      "status": "scheduled",
+      "platformPostId": null,
+      "statusMessage": null,
+      "updatedAt": null,
+      "options": {
+        "instagram": {
+          "mediaType": "IMAGE"
+        }
+      }
+    },
+    {
+      "id": "tt-night-wind-001",
+      "title": "Night wind over the city — a 30 second study",
+      "caption": "Wind, rendered slowly: the Fresh Muse hero study in motion. #freshmuse #art",
+      "media": [
+        {
+          "kind": "video",
+          "url": "https://freshmuseart.github.io/media/night-wind-study.mp4"
+        }
+      ],
+      "platform": "tiktok",
+      "scheduledFor": null,
+      "status": "draft",
+      "platformPostId": null,
+      "statusMessage": null,
+      "updatedAt": null,
+      "options": {
+        "tiktok": {
+          "postMode": "draft",
+          "source": "file",
+          "privacyLevel": "PUBLIC_TO_EVERYONE"
+        }
+      }
+    }
+  ]
+}

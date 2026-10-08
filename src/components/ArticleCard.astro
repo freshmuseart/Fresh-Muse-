@@ -1,0 +1,131 @@
+---
+import ArtPlate from './ArtPlate.astro';
+import { getCategory } from '../data/categories';
+import { url } from '../utils/url';
+
+/**
+ * ArticleCard — editorial card for article listings.
+ * NON-PROGRAMMER NOTE: this renders automatically from files in
+ * src/content/articles/; you normally never need to edit this file.
+ */
+interface Props {
+  title: string;
+  description: string;
+  category: string;
+  date: Date;
+  slug: string;
+  featured?: boolean;
+}
+
+const { title, description, category, date, slug, featured = false } = Astro.props;
+const cat = getCategory(category);
+const formatted = new Intl.DateTimeFormat('en', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+}).format(date);
+---
+
+<article class:list={['card', 'article-card', { 'article-card--featured': featured }]}>
+  <a class="article-card__media" href={url(`/articles/${slug}`)} tabindex="-1" aria-hidden="true">
+    <ArtPlate seed={slug} quiet={!featured} />
+  </a>
+  <div class="article-card__body">
+    <p class="article-card__meta">
+      {cat && <span class="article-card__cat">{cat.title}</span>}
+      <time datetime={date.toISOString()}>{formatted}</time>
+    </p>
+    <h3 class="article-card__title">
+      <a href={url(`/articles/${slug}`)}>{title}</a>
+    </h3>
+    <p class="article-card__desc">{description}</p>
+    <span class="article-card__more" aria-hidden="true">Read →</span>
+  </div>
+</article>
+
+<style>
+  .article-card {
+    padding: 0;
+    gap: 0;
+  }
+
+  .article-card__media {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    background: var(--night-900);
+  }
+
+  .article-card__media :global(svg) {
+    transition: transform 900ms var(--ease);
+  }
+
+  .article-card:hover .article-card__media :global(svg) {
+    transform: scale(1.05);
+  }
+
+  .article-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: clamp(1.3rem, 2.4vw, 1.9rem);
+    flex: 1;
+  }
+
+  .article-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9em;
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .article-card__cat {
+    color: var(--gold);
+  }
+
+  .article-card__title {
+    font-size: var(--step-1);
+    line-height: 1.24;
+  }
+
+  .article-card__title a {
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .article-card__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .article-card__desc {
+    color: var(--ink-muted);
+    font-size: var(--step--1);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .article-card__more {
+    font-size: var(--step--1);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity var(--speed) var(--ease), transform var(--speed) var(--ease);
+  }
+
+  .article-card:hover .article-card__more {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .article-card--featured .article-card__title {
+    font-size: var(--step-2);
+  }
+</style>

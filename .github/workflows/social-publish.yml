@@ -1,0 +1,89 @@
+# Fresh Muse — social publishing (MANUAL ONLY).
+#
+# This workflow is intentionally NOT triggered by pushes, schedules, or the
+# site build. It runs only when a maintainer starts it from the Actions tab,
+# and it only ever publishes when the input below is exactly "publish" —
+# otherwise it performs an offline dry run.
+#
+# Credentials come exclusively from GitHub Actions Secrets/Variables
+# (Settings → Secrets and variables → Actions). They are injected ONLY into
+# this workflow's job — never into the Pages deploy workflow, never into the
+# site build, and never into the frontend bundle.
+
+name: Social publishing (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Dry run by default. Type "publish" to actually publish due posts.'
+        required: true
+        default: 'dry-run'
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Readiness report (offline, names only)
+        run: bun social/cli.ts status
+        env:
+          # ── Secrets (Settings → Secrets and variables → Actions → Secrets) ──
+          INSTAGRAM_APP_SECRET: ${{ secrets.INSTAGRAM_APP_SECRET }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+          # ── Variables (Settings → Secrets and variables → Actions → Variables) ─
+          INSTAGRAM_APP_ID: ${{ vars.INSTAGRAM_APP_ID }}
+          INSTAGRAM_REDIRECT_URI: ${{ vars.INSTAGRAM_REDIRECT_URI }}
+          INSTAGRAM_API_VERSION: ${{ vars.INSTAGRAM_API_VERSION }}
+          INSTAGRAM_USER_ID: ${{ vars.INSTAGRAM_USER_ID }}
+          INSTAGRAM_TOKEN_OBTAINED_AT: ${{ vars.INSTAGRAM_TOKEN_OBTAINED_AT }}
+          INSTAGRAM_TOKEN_EXPIRES_AT: ${{ vars.INSTAGRAM_TOKEN_EXPIRES_AT }}
+          TIKTOK_CLIENT_KEY: ${{ vars.TIKTOK_CLIENT_KEY }}
+          TIKTOK_REDIRECT_URI: ${{ vars.TIKTOK_REDIRECT_URI }}
+          TIKTOK_OPEN_ID: ${{ vars.TIKTOK_OPEN_ID }}
+          TIKTOK_TOKEN_OBTAINED_AT: ${{ vars.TIKTOK_TOKEN_OBTAINED_AT }}
+          TIKTOK_DIRECT_POST_APPROVED: ${{ vars.TIKTOK_DIRECT_POST_APPROVED }}
+
+      - name: Publish (dry run unless confirm == "publish")
+        run: bun social/cli.ts publish --confirm "$CONFIRM"
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+          # ── Secrets ──
+          INSTAGRAM_APP_SECRET: ${{ secrets.INSTAGRAM_APP_SECRET }}
+          TIKTOK_CLIENT_SECRET: ${{ secrets.TIKTOK_CLIENT_SECRET }}
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
+          TIKTOK_REFRESH_TOKEN: ${{ secrets.TIKTOK_REFRESH_TOKEN }}
+          # ── Variables ──
+          INSTAGRAM_APP_ID: ${{ vars.INSTAGRAM_APP_ID }}
+          INSTAGRAM_REDIRECT_URI: ${{ vars.INSTAGRAM_REDIRECT_URI }}
+          INSTAGRAM_API_VERSION: ${{ vars.INSTAGRAM_API_VERSION }}
+          INSTAGRAM_USER_ID: ${{ vars.INSTAGRAM_USER_ID }}
+          INSTAGRAM_TOKEN_OBTAINED_AT: ${{ vars.INSTAGRAM_TOKEN_OBTAINED_AT }}
+          INSTAGRAM_TOKEN_EXPIRES_AT: ${{ vars.INSTAGRAM_TOKEN_EXPIRES_AT }}
+          TIKTOK_CLIENT_KEY: ${{ vars.TIKTOK_CLIENT_KEY }}
+          TIKTOK_REDIRECT_URI: ${{ vars.TIKTOK_REDIRECT_URI }}
+          TIKTOK_OPEN_ID: ${{ vars.TIKTOK_OPEN_ID }}
+          TIKTOK_TOKEN_OBTAINED_AT: ${{ vars.TIKTOK_TOKEN_OBTAINED_AT }}
+          TIKTOK_DIRECT_POST_APPROVED: ${{ vars.TIKTOK_DIRECT_POST_APPROVED }}
+
+      - name: Save updated content queue (statuses / post IDs / errors)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: social-queue
+          path: social/content/queue.json
