@@ -1,0 +1,171 @@
+/**
+ * ArtPlate — original, generated cover art for cards and articles.
+ *
+ * Every plate is drawn procedurally from a seed string, so each card gets a
+ * unique but on-brand composition: flowing wind-like curves, a slow spiral
+ * of painterly motion, and a few distant points of light. Nothing here
+ * reproduces any existing artwork — it is Fresh Muse's own visual language.
+ *
+ * The maths is a 1:1 port of the original component, so every published plate
+ * keeps the exact same composition it had before the migration.
+ */
+
+/* --- deterministic pseudo-random --------------------------------------- */
+function hashString(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function mulberry32(a: number) {
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* --- flowing horizontal bands (wind lines) ----------------------------- */
+function bandPath(rand: () => number, y0: number, amp: number, phase: number, drift: number): string {
+  const W = 400;
+  const pts: string[] = [];
+  const steps = 14;
+  for (let i = 0; i <= steps; i++) {
+    const x = (i / steps) * (W + 40) - 20;
+    const t = i / steps;
+    const y =
+      y0 +
+      Math.sin(t * Math.PI * 2 * drift + phase) * amp +
+      Math.sin(t * Math.PI * 3.4 + phase * 1.7) * (amp * 0.35);
+    pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+  }
+  // smooth polyline into a path with quadratic midpoints
+  let d = `M ${pts[0]}`;
+  for (let i = 1; i < pts.length - 1; i++) {
+    const [x1, y1] = pts[i].split(',').map(Number);
+    const [x2, y2] = pts[i + 1].split(',').map(Number);
+    d += ` Q ${x1.toFixed(1)},${y1.toFixed(1)} ${((x1 + x2) / 2).toFixed(1)},${((y1 + y2) / 2).toFixed(1)}`;
+  }
+  const last = pts[pts.length - 1].split(',').map(Number);
+  d += ` L ${last[0].toFixed(1)},${last[1].toFixed(1)}`;
+  return d;
+}
+
+export function ArtPlate({
+  seed,
+  className,
+  /** Hide the spiral focal point (useful for small thumbnails) */
+  quiet = false,
+}: {
+  seed: string;
+  className?: string;
+  quiet?: boolean;
+}) {
+  const rand = mulberry32(hashString(seed));
+  const W = 400;
+  const H = 280;
+
+  const bands = Array.from({ length: 5 }, (_, i) => {
+    const y0 = 40 + i * 50 + rand() * 24;
+    const amp = 14 + rand() * 26;
+    const phase = rand() * Math.PI * 2;
+    const drift = 1 + rand() * 1.4;
+    const gold = rand() > 0.62;
+    return {
+      d: bandPath(rand, y0, amp, phase, drift),
+      stroke: gold ? '#c8a86a' : '#7d8cc4',
+      width: (0.8 + rand() * 1.6).toFixed(2),
+      opacity: (0.16 + rand() * 0.3).toFixed(2),
+      gold,
+    };
+  });
+
+  /* --- central spiral (organic swirling movement) -------------------------- */
+  const cx = W * (0.32 + rand() * 0.4);
+  const cy = H * (0.3 + rand() * 0.36);
+  const turns = 2.1 + rand() * 1.2;
+  const spiralPts: string[] = [];
+  const spiralSteps = 60;
+  for (let i = 0; i <= spiralSteps; i++) {
+    const t = i / spiralSteps;
+    const angle = t * turns * Math.PI * 2 + rand() * 0.04;
+    const r = 4 + t * (34 + rand() * 30);
+    spiralPts.push(`${(cx + Math.cos(angle) * r).toFixed(1)},${(cy + Math.sin(angle) * r * 0.72).toFixed(1)}`);
+  }
+  let spiralD = `M ${spiralPts[0]}`;
+  for (let i = 1; i < spiralPts.length - 1; i++) {
+    const [x1, y1] = spiralPts[i].split(',').map(Number);
+    const [x2, y2] = spiralPts[i + 1].split(',').map(Number);
+    spiralD += ` Q ${x1.toFixed(1)},${y1.toFixed(1)} ${((x1 + x2) / 2).toFixed(1)},${((y1 + y2) / 2).toFixed(1)}`;
+  }
+
+  /* --- distant points of light --------------------------------------------- */
+  const stars = Array.from({ length: 10 }, () => ({
+    x: (rand() * W).toFixed(1),
+    y: (rand() * H).toFixed(1),
+    r: (0.7 + rand() * 1.8).toFixed(2),
+    o: (0.25 + rand() * 0.55).toFixed(2),
+    gold: rand() > 0.5,
+  }));
+
+  const gid = `plate-${hashString(seed).toString(36)}`;
+
+  return (
+    <svg
+      className={className}
+      viewBox={`0 0 ${W} ${H}`}
+      preserveAspectRatio="xMidYMid slice"
+      role="img"
+      aria-label="Original Fresh Muse abstract artwork: swirling night-wind lines and distant lights"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id={`${gid}-bg`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#10162c" />
+          <stop offset="55%" stopColor="#0a0e1e" />
+          <stop offset="100%" stopColor="#131a33" />
+        </linearGradient>
+        <radialGradient id={`${gid}-glow`} cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stopColor="#c8a86a" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#c8a86a" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      <rect width={W} height={H} fill={`url(#${gid}-bg)`} />
+
+      {!quiet && <circle cx={cx} cy={cy} r="64" fill={`url(#${gid}-glow)`} opacity="0.6" />}
+
+      {bands.map((b, i) => (
+        <path
+          key={i}
+          d={b.d}
+          fill="none"
+          stroke={b.stroke}
+          strokeWidth={b.width}
+          strokeOpacity={b.opacity}
+          strokeLinecap="round"
+        />
+      ))}
+
+      {!quiet && (
+        <path
+          d={spiralD}
+          fill="none"
+          stroke="#c8a86a"
+          strokeWidth="1.4"
+          strokeOpacity="0.5"
+          strokeLinecap="round"
+        />
+      )}
+
+      {stars.map((s, i) => (
+        <circle key={i} cx={s.x} cy={s.y} r={s.r} fill={s.gold ? '#d9a55e' : '#e9e4d6'} fillOpacity={s.o} />
+      ))}
+    </svg>
+  );
+}

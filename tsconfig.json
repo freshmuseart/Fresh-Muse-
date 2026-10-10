@@ -1,5 +1,21 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "src/**/*", "social/**/*", "command-center/**/*"],
-  "exclude": ["dist", "node_modules"]
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "types": ["vite/client", "node"]
+  },
+  "include": ["src/**/*", "social/**/*", "command-center/**/*.ts", "vite.config.ts"],
+  "exclude": ["dist", "node_modules", ".vite-static"]
 }

@@ -1,6 +1,10 @@
 # build output
 dist/
 .astro/
+.astro-ref/
+.vite-static/
+# Freebuff deploy staging copy of dist/ (generated at deploy time)
+isolate/
 *.tsbuildinfo
 
 # dependencies
