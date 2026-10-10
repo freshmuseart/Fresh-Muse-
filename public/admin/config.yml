@@ -1,0 +1,77 @@
+# Fresh Muse — Decap CMS dashboard configuration (served publicly at /admin/config.yml).
+#
+# SECURITY: this file is public. It must NEVER contain a secret — no tokens, no
+# client secrets. Authentication is delegated to the OAuth proxy below, which is
+# the only place the GitHub OAuth client secret exists.
+
+backend:
+  name: github
+  repo: freshmuseart/Fresh-Muse-
+  branch: main
+  # PROXY URL of the Cloudflare Worker OAuth proxy (see cloudflare-worker/README.md).
+  # Login cannot work until this matches the deployed worker URL.
+  base_url: https://freshmuse-decap-auth.CHANGE-ME.workers.dev
+  auth_endpoint: /auth
+
+# Images uploaded in the dashboard are committed to the repository under
+# public/images/ and served from /images/… on the website.
+media_folder: public/images
+public_folder: /images
+
+collections:
+  - name: articles
+    label: Articles
+    label_singular: Article
+    folder: src/content/articles
+    create: true
+    extension: md
+    format: frontmatter
+    # URL slug is derived from the title, matching /articles/<slug>/
+    slug: "{{slug}}"
+    sortable_fields: ["date", "title", "category"]
+    fields:
+      - label: Title
+        name: title
+        widget: string
+        hint: "Shown as the article headline and in the browser tab."
+      - label: Description
+        name: description
+        widget: text
+        hint: "One or two sentences — shown on cards, section pages and search results."
+      - label: Category
+        name: category
+        widget: select
+        options:
+          - { label: Art You Almost Missed, value: art-you-almost-missed }
+          - { label: Art × Interior, value: art-interior }
+          - { label: Artists, value: artists }
+          - { label: Collectible Objects, value: collectible-objects }
+          - { label: Art History, value: art-history }
+        default: art-you-almost-missed
+        hint: "Must match a section that exists on the site."
+      - label: Publish Date
+        name: date
+        widget: date
+        format: "YYYY-MM-DD"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+        hint: "Ordering on the homepage and section pages follows this date."
+      - label: Author
+        name: author
+        widget: string
+        default: "Fresh Muse"
+        required: false
+      - label: Featured
+        name: featured
+        widget: boolean
+        default: false
+        hint: "Shows the article in the featured row on the homepage."
+      - label: Draft
+        name: draft
+        widget: boolean
+        default: false
+        hint: "Turn ON to hide the article from the website while you write."
+      - label: Body
+        name: body
+        widget: markdown
+        hint: "Markdown. Headings, links, lists, blockquotes and images ( /images/… ) are supported."

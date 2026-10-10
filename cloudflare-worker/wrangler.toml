@@ -1,0 +1,14 @@
+# Fresh Muse — Decap CMS OAuth proxy
+#
+# Non-secret configuration only. The GitHub OAuth App id/secret are added as
+# Worker SECRETS (see README.md, step 3) and must never be written here.
+
+name = "freshmuse-decap-auth"
+main = "worker.ts"
+compatibility_date = "2026-09-01"
+
+[vars]
+# The only website allowed to receive the login token (no trailing slash).
+ALLOWED_SITE_ORIGIN = "https://freshmuse.freebuff.app"
+# "0" = public repository (scope public_repo). Set to "1" if the repo goes private.
+GITHUB_REPO_PRIVATE = "0"

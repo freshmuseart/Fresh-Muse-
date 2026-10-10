@@ -62,6 +62,7 @@ const absolute = (route) => new URL(`${baseWithSlash.replace(/\/$/, '')}${route}
 const robots = [
   'User-agent: *',
   'Allow: /',
+  'Disallow: /admin/', // editorial dashboard — noindex, not public content
   '',
   `Sitemap: ${absolute('/sitemap-index.xml')}`,
   '',

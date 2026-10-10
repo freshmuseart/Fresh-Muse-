@@ -10,12 +10,14 @@
  * Production builds never ship this plugin — it only exists inside
  * configureServer.
  */
-import { readdir, stat } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bundleRenderer } from './render-bundle.mjs';
 
 const ROOT = path.dirname(fileURLToPath(new URL('../package.json', import.meta.url)));
+const PUBLIC_DIR = path.join(ROOT, 'public');
 
 /** Requests Vite itself must handle. */
 const VITE_OWNED = /^\/(@|node_modules|src\/|favicon\.svg$|og\.png$|api\/)/;
@@ -78,6 +80,17 @@ export function devRenderPlugin() {
         if (VITE_OWNED.test(url)) return next();
         // Anything with a file extension belongs to Vite or public/.
         if (path.extname(url) !== '' && !url.endsWith('/')) return next();
+        // Directory indexes published from public/ (e.g. /admin/) are static
+        // files — serve them instead of rendering a site route for the path.
+        if (url !== '/') {
+          const dirIndex = path.normalize(path.join(PUBLIC_DIR, url, 'index.html'));
+          if (dirIndex.startsWith(PUBLIC_DIR + path.sep) && existsSync(dirIndex)) {
+            const html = await readFile(dirIndex, 'utf8');
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.end(html);
+            return;
+          }
+        }
 
         try {
           const mod = await getRenderer();

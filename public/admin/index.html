@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <!--
+      Default referrer policy (strict-origin-when-cross-origin) is intentional:
+      the OAuth proxy checks the Origin/Referer of the login request when the
+      browser sends one. Do not set a stricter policy here.
+    -->
+    <title>Fresh Muse — Editorial Dashboard</title>
+    <!--
+      Decap CMS is loaded from the official CDN. This page is a static shell:
+      it contains no secrets and can do nothing until a GitHub account WITH
+      push access to this repository signs in through the OAuth proxy
+      (base_url in config.yml).
+
+      Do not add credentials here or in config.yml — they would be public.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  </head>
+  <body></body>
+</html>
