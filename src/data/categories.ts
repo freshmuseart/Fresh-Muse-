@@ -76,6 +76,7 @@ export const RESERVED_SLUGS = [
   'about',
   'contact',
   'resources',
+  'shop',
   'privacy-policy',
   'affiliate-disclosure',
   'articles',

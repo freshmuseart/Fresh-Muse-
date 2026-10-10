@@ -75,3 +75,62 @@ collections:
         name: body
         widget: markdown
         hint: "Markdown. Headings, links, lists, blockquotes and images ( /images/… ) are supported."
+
+  - name: products
+    label: Products
+    label_singular: Product
+    folder: src/content/products
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    sortable_fields: ["title", "category", "published"]
+    # Product photos uploaded here are committed to the repository and served
+    # from /images/products/… on the website. Nothing private is ever stored.
+    media_folder: public/images/products
+    public_folder: /images/products
+    fields:
+      - label: Title
+        name: title
+        widget: string
+        hint: "Shown on the card and in the browser tab."
+      - label: Description
+        name: description
+        widget: text
+        hint: "One or two sentences shown on the shop card."
+      - label: Price
+        name: price
+        widget: string
+        hint: "Written exactly as it should appear — e.g. $18, €24, Free."
+      - label: Category
+        name: category
+        widget: select
+        options:
+          - { label: Prints & Editions, value: prints-editions }
+          - { label: Books & Zines, value: books-zines }
+          - { label: Objects, value: objects }
+          - { label: Digital Downloads, value: digital }
+        default: prints-editions
+        hint: "Must match a category listed in src/data/products.ts."
+      - label: Image
+        name: image
+        widget: image
+        required: false
+        hint: "Optional. Without one the shop shows generated art for this product."
+      - label: Checkout link
+        name: checkout_url
+        widget: string
+        pattern:
+          - "^https://.+"
+          - "Must be a full https:// link — e.g. your Payhip buy link (https://payhip.com/buy?link=…)"
+        hint: "Payhip (or Gumroad) buy link. Payments and downloads happen there, never on this site."
+      - label: Published
+        name: published
+        widget: boolean
+        default: false
+        hint: "ON = visible on /shop/. OFF = kept in the repository, hidden from the site."
+      - label: Body
+        name: body
+        widget: markdown
+        required: false
+        hint: "Optional longer copy. Not shown on the shop card."

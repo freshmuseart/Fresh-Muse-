@@ -19,6 +19,7 @@ import { PrivacyPolicy } from '../pages/PrivacyPolicy';
 import { AffiliateDisclosure } from '../pages/AffiliateDisclosure';
 import { NotFound } from '../pages/NotFound';
 import { ArticlesIndex } from '../pages/ArticlesIndex';
+import { Shop } from '../pages/Shop';
 import { ArticlePage } from '../pages/ArticlePage';
 import { CategoryPage } from '../pages/CategoryPage';
 import { CommandCenter } from '../pages/CommandCenter';
@@ -71,6 +72,11 @@ export function renderRoute(route: string, options: RenderOptions = {}): string 
     description =
       'Every piece in the Fresh Muse journal — overlooked art, interiors, artists, collectible objects and art history.';
     content = <ArticlesIndex />;
+  } else if (route === '/shop/') {
+    title = 'Shop';
+    description =
+      'Prints, editions and printed matter from the Fresh Muse studio — short runs, sold through our checkout partner.';
+    content = <Shop />;
   } else if (route === '/command-center/') {
     title = 'Command Center';
     description = 'Describe a change in plain English and watch the Fresh Muse site adapt.';
