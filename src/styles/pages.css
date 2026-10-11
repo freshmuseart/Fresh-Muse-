@@ -1584,3 +1584,32 @@
     flex-wrap: wrap;
   }
 }
+
+/* moodboard groups on /shop/ */
+
+.board + .board {
+  margin-top: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.board__head {
+  max-width: var(--measure);
+  margin-bottom: 1.6rem;
+}
+
+.board__head h2 {
+  font-size: var(--step-2);
+}
+
+.board__head p {
+  margin-top: 0.5em;
+  color: var(--ink-soft);
+}
+
+.board .prose {
+  margin-bottom: 1.6rem;
+}
+
+.board__empty {
+  color: var(--ink-muted);
+  font-style: italic;
+}

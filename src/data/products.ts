@@ -1,13 +1,13 @@
 /**
- * Fresh Muse — shop categories.
+ * Fresh Muse — curated-item categories.
  *
- * NON-PROGRAMMER NOTE: to add a shop category:
+ * NON-PROGRAMMER NOTE: to add a category:
  *   1. add a block below with a unique lowercase `slug` and a `label`
- *   2. add the SAME pair to the "Products" collection in
+ *   2. add the SAME pair to the "Curated Items" collection in
  *      public/admin/config.yml (that is where the dashboard's dropdown comes
  *      from — the two lists must stay in step)
- * Nothing else needs to change: every product that uses the slug is grouped
- * under the label on /shop/.
+ * Nothing else needs to change: every item that uses the slug is labelled
+ * with it on /shop/.
  */
 
 export interface ProductCategory {

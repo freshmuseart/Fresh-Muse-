@@ -4,17 +4,29 @@ description: "A two-colour risograph of the Fresh Muse night sky, printed in an 
 price: "$35"
 category: "prints-editions"
 image: ""
-checkout_url: ""
+url: ""
+link_label: ""
+sponsored: true
+collection: ""
 published: false
 ---
 
-An example product. Before it can go live, fill in two things in the dashboard
-(`/admin` → Products → this entry):
+An example curated item. Before it can go live, fill in the dashboard
+(`/admin` → Curated Items → this entry):
 
-1. **Checkout link** — the Payhip (or Gumroad) buy link for this item. The
-   product will not build or publish without it.
-2. **Image** — upload the artwork (it is stored in the repository under
-   `public/images/products/`). Without one, the shop shows generated art
-   instead.
+1. **Retailer link** (`url`) — the product page on the retailer's own site,
+   copied exactly, including any affiliate tracking parameters. The item
+   will not build or publish without one. Payments and delivery happen with
+   the retailer, never on this site.
+2. **Image** — optional; upload it in the dashboard (it is stored in the
+   repository under `public/images/products/`). Without one, generated art
+   is shown instead.
+3. **Moodboard** (`collection`) — optional; the file name of a moodboard
+   from the Moodboards collection (e.g. `example-moodboard`). Leave empty
+   to list the item under "Curated finds".
 
-Then switch **Published** on. Only `published: true` products reach `/shop/`.
+Leave **Sponsored** on for any link where Fresh Muse earns a commission —
+it adds `rel="sponsored"` and an "Affiliate link" label to the card. The
+**price** field is display only; leave it empty to show no price.
+
+Then switch **Published** on. Only published items reach `/shop/`.

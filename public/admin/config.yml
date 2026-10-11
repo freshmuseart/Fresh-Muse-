@@ -76,16 +76,19 @@ collections:
         widget: markdown
         hint: "Markdown. Headings, links, lists, blockquotes and images ( /images/… ) are supported."
 
+  # Curated items — the pieces shown on /shop/ ("Collections"). Fresh Muse
+  # never sells directly: every item links out to a retailer, often with an
+  # affiliate tracking parameter that is copied through exactly as written.
   - name: products
-    label: Products
-    label_singular: Product
+    label: Curated Items
+    label_singular: Curated Item
     folder: src/content/products
     create: true
     extension: md
     format: frontmatter
     slug: "{{slug}}"
-    sortable_fields: ["title", "category", "published"]
-    # Product photos uploaded here are committed to the repository and served
+    sortable_fields: ["title", "category", "collection", "published"]
+    # Item photos uploaded here are committed to the repository and served
     # from /images/products/… on the website. Nothing private is ever stored.
     media_folder: public/images/products
     public_folder: /images/products
@@ -97,11 +100,12 @@ collections:
       - label: Description
         name: description
         widget: text
-        hint: "One or two sentences shown on the shop card."
+        hint: "One or two sentences shown on the card."
       - label: Price
         name: price
         widget: string
-        hint: "Written exactly as it should appear — e.g. $18, €24, Free."
+        required: false
+        hint: "Optional, display only — written exactly as it should appear, e.g. $18, €24. Leave empty to show no price. The retailer's page is the source of truth."
       - label: Category
         name: category
         widget: select
@@ -116,14 +120,30 @@ collections:
         name: image
         widget: image
         required: false
-        hint: "Optional. Without one the shop shows generated art for this product."
-      - label: Checkout link
-        name: checkout_url
+        hint: "Optional. Without one, generated art is shown for this item."
+      - label: Retailer link
+        name: url
         widget: string
         pattern:
           - "^https://.+"
-          - "Must be a full https:// link — e.g. your Payhip buy link (https://payhip.com/buy?link=…)"
-        hint: "Payhip (or Gumroad) buy link. Payments and downloads happen there, never on this site."
+          - "Must be a full https:// link — the retailer's own product page, copied exactly."
+        hint: "Where the piece can be seen or bought — the retailer's product page. Copy the full URL including any affiliate tracking parameters; it is published verbatim. Payments and delivery happen at the retailer, never on this site."
+      - label: Link text
+        name: link_label
+        widget: string
+        required: false
+        default: "View at retailer"
+        hint: "Button text on the card. Suggested: 'View at retailer' or 'Discover the piece'."
+      - label: Affiliate link
+        name: sponsored
+        widget: boolean
+        default: true
+        hint: "ON adds rel=\"sponsored\" to the link and an 'Affiliate link' label to the card. Keep ON for any link where Fresh Muse earns a commission."
+      - label: Collection
+        name: collection
+        widget: string
+        required: false
+        hint: "Optional moodboard — the file name of an entry in the Moodboards collection (e.g. example-moodboard). Leave empty to list the item under 'Curated finds'."
       - label: Published
         name: published
         widget: boolean
@@ -133,4 +153,36 @@ collections:
         name: body
         widget: markdown
         required: false
-        hint: "Optional longer copy. Not shown on the shop card."
+        hint: "Optional longer copy. Not shown on the card."
+
+  # Moodboards — the groupings shown on /shop/ ("Collections"). Curated items
+  # join a moodboard through their Collection field.
+  - name: collections
+    label: Moodboards
+    label_singular: Moodboard
+    folder: src/content/collections
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    sortable_fields: ["title", "published"]
+    fields:
+      - label: Title
+        name: title
+        widget: string
+        hint: "Heading of the moodboard on /shop/."
+      - label: Tagline
+        name: tagline
+        widget: string
+        required: false
+        hint: "Optional one-line promise shown under the title."
+      - label: Published
+        name: published
+        widget: boolean
+        default: false
+        hint: "ON = the moodboard (and its items) appear on /shop/. OFF = hidden from the site."
+      - label: Body
+        name: body
+        widget: markdown
+        required: false
+        hint: "Optional intro copy for the moodboard — markdown is supported."

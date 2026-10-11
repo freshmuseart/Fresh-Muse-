@@ -73,9 +73,9 @@ export function renderRoute(route: string, options: RenderOptions = {}): string 
       'Every piece in the Fresh Muse journal — overlooked art, interiors, artists, collectible objects and art history.';
     content = <ArticlesIndex />;
   } else if (route === '/shop/') {
-    title = 'Shop';
+    title = 'Collections';
     description =
-      'Prints, editions and printed matter from the Fresh Muse studio — short runs, sold through our checkout partner.';
+      'Curated collections and moodboards from Fresh Muse — art, editions and objects worth living with, with links to the retailers that carry them.';
     content = <Shop />;
   } else if (route === '/command-center/') {
     title = 'Command Center';

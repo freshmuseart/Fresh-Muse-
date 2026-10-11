@@ -7,9 +7,9 @@
  *   3. writes robots.txt and the sitemap pair, matching the deployed
  *      SITE_URL / BASE_PATH exactly.
  *
- * Environment (set automatically by the GitHub Actions workflow):
- *   SITE_URL  e.g. https://owner.github.io
- *   BASE_PATH e.g. / or /Fresh-Muse-/
+ * Environment:
+ *   SITE_URL  production origin — defaults to https://freshmuse.freebuff.app
+ *   BASE_PATH e.g. / or /Fresh-Muse-/ (set by the GitHub Pages workflow)
  */
 import { build as viteBuild } from 'vite';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
@@ -21,7 +21,7 @@ const ROOT = path.dirname(fileURLToPath(new URL('../package.json', import.meta.u
 const DIST = path.join(ROOT, 'dist');
 
 const base = process.env.BASE_PATH ?? '/';
-const site = process.env.SITE_URL ?? 'https://freshmuseart.github.io';
+const site = process.env.SITE_URL ?? 'https://freshmuse.freebuff.app';
 const baseWithSlash = base.endsWith('/') ? base : `${base}/`;
 
 console.log(`▶ vite build  (base: ${baseWithSlash})`);

@@ -33,7 +33,7 @@ export function Layout({
   children: ReactNode;
 }) {
   const pageTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
-  const canonical = new URL(path, process.env.SITE_URL ?? 'https://freshmuseart.github.io');
+  const canonical = new URL(path, process.env.SITE_URL ?? 'https://freshmuse.freebuff.app');
   const ogImage = new URL(url('/og.png'), canonical).href;
 
   return (

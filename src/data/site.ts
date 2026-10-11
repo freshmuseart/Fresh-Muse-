@@ -43,7 +43,7 @@ export const primaryNav = [
   { label: 'Artists', href: '/artists' },
   { label: 'Objects', href: '/collectible-objects' },
   { label: 'History', href: '/art-history' },
-  { label: 'Shop', href: '/shop' },
+  { label: 'Collections', href: '/shop' },
   { label: 'About', href: '/about' },
 ];
 
@@ -65,7 +65,7 @@ export const footerNav = [
     links: [
       { label: 'About', href: '/about' },
       { label: 'Contact', href: '/contact' },
-      { label: 'Shop', href: '/shop' },
+      { label: 'Collections', href: '/shop' },
       { label: 'Privacy Policy', href: '/privacy-policy' },
       { label: 'Affiliate Disclosure', href: '/affiliate-disclosure' },
     ],
