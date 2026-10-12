@@ -11,14 +11,26 @@
     -->
     <title>Fresh Muse — Editorial Dashboard</title>
     <!--
+      Pin the config file to an absolute path so it loads correctly no matter
+      how the URL is written (/admin/, /admin, or a future sub-path).
+      Decap reads this link tag before falling back to a relative config.yml.
+    -->
+    <link rel="cms-config-url" type="text/yaml" href="/admin/config.yml" />
+    <!--
       Decap CMS is loaded from the official CDN. This page is a static shell:
       it contains no secrets and can do nothing until a GitHub account WITH
       push access to this repository signs in through the OAuth proxy
       (base_url in config.yml).
 
       Do not add credentials here or in config.yml — they would be public.
+
+      IMPORTANT: this script must stay at the END of <body>. Loaded from
+      <head> it executes before <body> exists, Decap throws
+      "Cannot read properties of null (reading 'appendChild')" and the
+      dashboard renders as a blank page.
     -->
-    <script src="https://cdn.jsdelivr.net/npm/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </head>
-  <body></body>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  </body>
 </html>

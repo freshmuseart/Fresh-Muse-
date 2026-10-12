@@ -186,3 +186,156 @@ collections:
         widget: markdown
         required: false
         hint: "Optional intro copy for the moodboard — markdown is supported."
+
+  # ---------------------------------------------------------------------
+  # Exhibition — the 3D show at /exhibition/.
+  # Settings (title, intro, layout, lighting, spacing), then the rooms and
+  # the artworks that hang in them. Nothing here is ever deleted from the
+  # repository — turning Published off only hides the piece from the show.
+  # ---------------------------------------------------------------------
+  - name: exhibition-settings
+    label: Exhibition Settings
+    files:
+      - name: settings
+        label: Exhibition
+        file: src/content/exhibition/settings.md
+        fields:
+          - label: Title
+            name: title
+            widget: string
+            hint: "Title of the exhibition — shown on the entry screen and the browser tab."
+          - label: Introduction
+            name: intro
+            widget: text
+            hint: "One or two sentences shown on the entry screen before visitors walk in."
+          - label: How to visit
+            name: how_to
+            widget: text
+            required: false
+            hint: "Controls help shown under the introduction (keyboard, mouse and touch)."
+          - label: Room layout
+            name: layout
+            widget: select
+            options:
+              - { label: "Enfilade — rooms in a straight line", value: enfilade }
+              - { label: "Atrium — central hall with side rooms", value: atrium }
+            default: enfilade
+            hint: "How the rooms are arranged on the floor plan."
+          - label: Lighting
+            name: lighting
+            widget: select
+            options:
+              - { label: "Nocturne — dark rooms, warm picture lights", value: nocturne }
+              - { label: "Dawn — cooler, softly lit", value: dawn }
+              - { label: "White cube — even gallery light", value: white-cube }
+            default: nocturne
+            hint: "Mood preset for the whole exhibition."
+          - label: Artwork spacing
+            name: spacing
+            widget: number
+            value_type: float
+            min: 0.6
+            max: 2
+            step: 0.1
+            default: 1
+            hint: "Spread works further apart (above 1) or closer together (below 1)."
+
+  - name: exhibition-rooms
+    label: Exhibition Rooms
+    label_singular: Room
+    folder: src/content/exhibition/rooms
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    sortable_fields: ["order", "title"]
+    fields:
+      - label: Title
+        name: title
+        widget: string
+        hint: "Room name — shown on the plaque when a visitor enters."
+      - label: Description
+        name: description
+        widget: text
+        hint: "One or two sentences about the room, shown when visitors step inside."
+      - label: Order
+        name: order
+        widget: number
+        value_type: int
+        default: 1
+        hint: "1 is the first room visitors walk into."
+      - label: Published
+        name: published
+        widget: boolean
+        default: true
+        hint: "OFF hides the room — artworks assigned to it are hidden too."
+
+  - name: exhibition-artworks
+    label: Exhibition Artworks
+    label_singular: Artwork
+    folder: src/content/exhibition/artworks
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    sortable_fields: ["room", "order", "title"]
+    # Artwork images uploaded here are committed to the repository and
+    # served from /images/exhibition/… on the website.
+    media_folder: public/images/exhibition
+    public_folder: /images/exhibition
+    fields:
+      - label: Title
+        name: title
+        widget: string
+        hint: "Title of the work, shown on the wall label."
+      - label: Artist
+        name: artist
+        widget: string
+        hint: "Who made it — shown under the title on the wall label."
+      - label: Description
+        name: description
+        widget: text
+        hint: "One or two sentences shown when a visitor opens the work."
+      - label: Room
+        name: room
+        widget: relation
+        collection: exhibition-rooms
+        search_fields: ["title"]
+        value_field: "{{slug}}"
+        display_fields: ["title"]
+        hint: "Which room the work hangs in."
+      - label: Order
+        name: order
+        widget: number
+        value_type: int
+        default: 1
+        hint: "Hang order within the room — lower numbers hang first."
+      - label: Image
+        name: image
+        widget: image
+        required: false
+        hint: "Optional. Leave empty and a generated Fresh Muse placeholder is hung in its place."
+      - label: Link
+        name: link
+        widget: string
+        required: false
+        pattern:
+          - "^$|^https://.+"
+          - "Leave empty, or use a full https:// link (published exactly as written)."
+        hint: "Optional external page about the work — its own page, the artist's site, a museum."
+      - label: Link text
+        name: link_label
+        widget: string
+        required: false
+        default: "Read more"
+        hint: "Button text for the link above."
+      - label: Published
+        name: published
+        widget: boolean
+        default: false
+        hint: "ON = hung in the show. OFF = kept in the repository, hidden from the exhibition."
+      - label: Body
+        name: body
+        widget: markdown
+        required: false
+        hint: "Optional longer wall-label copy. Markdown is supported."
