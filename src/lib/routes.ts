@@ -16,6 +16,7 @@ export function listRoutes(): string[] {
     '/affiliate-disclosure/',
     '/articles/',
     '/shop/',
+    '/exhibition/',
     ...categories.map((c) => `/${c.slug}/`),
     ...getArticles().map((a) => `/articles/${a.id}/`),
     '/command-center/',

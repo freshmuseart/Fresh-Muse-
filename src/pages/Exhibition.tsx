@@ -91,7 +91,7 @@ export function Exhibition() {
       />
 
       {/* --- loading state --------------------------------------------- */}
-      <div className="ex__status" id="ex-status" role="status" aria-live="polite">
+      <div className="ex__status" id="ex-status" role="status" aria-live="polite" hidden>
         <span className="ex__spinner" aria-hidden="true" />
         <span>Preparing the exhibition…</span>
       </div>

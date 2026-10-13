@@ -23,6 +23,8 @@ import { Shop } from '../pages/Shop';
 import { ArticlePage } from '../pages/ArticlePage';
 import { CategoryPage } from '../pages/CategoryPage';
 import { CommandCenter } from '../pages/CommandCenter';
+import { Exhibition } from '../pages/Exhibition';
+import { getExhibitionSettings } from '../lib/exhibition';
 
 export { listRoutes };
 
@@ -77,6 +79,13 @@ export function renderRoute(route: string, options: RenderOptions = {}): string 
     description =
       'Curated collections and moodboards from Fresh Muse — art, editions and objects worth living with, with links to the retailers that carry them.';
     content = <Shop />;
+  } else if (route === '/exhibition/') {
+    const exhibition = getExhibitionSettings();
+    // The content title often ends with "— An Exhibition by Fresh Muse";
+    // the browser tab only needs the show's name.
+    title = exhibition.title.split('—')[0].trim() || 'Exhibition';
+    description = exhibition.intro;
+    content = <Exhibition />;
   } else if (route === '/command-center/') {
     title = 'Command Center';
     description = 'Describe a change in plain English and watch the Fresh Muse site adapt.';

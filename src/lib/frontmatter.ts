@@ -37,6 +37,18 @@ export function parseFrontmatter(source: string): ParsedFrontmatter {
     if (idx === -1) continue;
     const key = line.slice(0, idx).trim();
     let value = line.slice(idx + 1).trim();
+
+    // YAML block scalars ("key: >-", "key: |") start a folded/literal
+    // block whose content is the indented lines that follow. This site
+    // joins those lines with spaces, which is right for prose fields
+    // (Decap CMS writes long strings this way).
+    if (value === '>' || value === '>-' || value === '>+' || value === '|' || value === '|-' || value === '|+') {
+      if (key) {
+        data[key] = '';
+        currentKey = key;
+      }
+      continue;
+    }
     if (value.length >= 2) {
       const quote = value[0];
       const last = value[value.length - 1];

@@ -1,0 +1,594 @@
+/* ==========================================================================
+   EXHIBITION — the 3D show at /exhibition/
+   Entry screen, HUD, info panel, pause/error states and the static
+   fallback list. Uses the same tokens as the rest of the site.
+   ========================================================================== */
+
+.ex {
+  position: relative;
+}
+
+/* the hidden attribute always wins over our display rules */
+.ex [hidden] {
+  display: none !important;
+}
+
+/* --- loading status ------------------------------------------------------- */
+
+.ex__status {
+  position: fixed;
+  inset: 0;
+  z-index: 210;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  background: var(--night-950);
+  color: var(--ink-muted);
+  font-size: var(--step--1);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.ex__spinner {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line-strong);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: ex-spin 0.9s linear infinite;
+}
+
+@keyframes ex-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- entry screen ---------------------------------------------------------- */
+
+.ex__entry,
+.ex__error {
+  position: fixed;
+  inset: 0;
+  z-index: 160;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  padding: clamp(1.5rem, 6vw, 4rem);
+  overflow-y: auto;
+  text-align: center;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(125, 140, 208, 0.08), transparent 60%),
+    var(--night-950);
+}
+
+.ex__entry h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step--4, clamp(2.2rem, 1.4rem + 4vw, 4.6rem));
+  font-size: clamp(2.2rem, 1.4rem + 4vw, 4.6rem);
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  max-width: 18ch;
+}
+
+.ex__entry .lede,
+.ex__error p {
+  max-width: 56ch;
+  text-align: center;
+}
+
+.ex__how {
+  max-width: 62ch;
+  font-size: var(--step--1);
+  line-height: 1.8;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 1rem 0;
+}
+
+.ex__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  justify-content: center;
+}
+
+.ex__actions .btn:disabled {
+  opacity: 0.45;
+  cursor: wait;
+  transform: none;
+}
+
+.ex__roomline {
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  max-width: 60ch;
+  line-height: 2;
+}
+
+.ex__error h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-3);
+}
+
+/* --- the 3D stage ---------------------------------------------------------- */
+
+.ex__stage {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #05070d;
+}
+
+.ex__stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  outline: none;
+}
+
+.ex__crosshair {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin: 0;
+  border-radius: 50%;
+  background: rgba(242, 237, 225, 0.6);
+  transform: translate(-50%, -50%) scale(1);
+  transition:
+    transform 240ms var(--ease),
+    background-color 240ms var(--ease),
+    border-color 240ms var(--ease);
+  border: 1px solid transparent;
+  pointer-events: none;
+}
+
+.ex__crosshair.is-hot {
+  background: transparent;
+  border-color: var(--gold);
+  transform: translate(-50%, -50%) scale(2.4);
+}
+
+.ex__target {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 26px);
+  transform: translateX(-50%);
+  max-width: min(80vw, 30rem);
+  padding: 0.45em 1.1em;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(4, 6, 13, 0.72);
+  backdrop-filter: blur(6px);
+  color: var(--ink);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.ex__roomintro {
+  position: absolute;
+  top: clamp(1.2rem, 4vh, 3rem);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(34rem, 86vw);
+  padding: 1.3rem 2rem 1.5rem;
+  text-align: center;
+  background: rgba(4, 6, 13, 0.78);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+  animation: ex-fade 600ms var(--ease) both;
+  pointer-events: none;
+}
+
+.ex__roomintro h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-2);
+  margin: 0.35rem 0 0.4rem;
+}
+
+.ex__roomintro p:last-child {
+  color: var(--ink-muted);
+  font-size: var(--step--1);
+  line-height: 1.7;
+  margin: 0;
+}
+
+@keyframes ex-fade {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* --- HUD -------------------------------------------------------------------- */
+
+.ex__hud {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: clamp(1rem, 3vw, 2rem);
+  pointer-events: none;
+}
+
+.ex__hud-left,
+.ex__hud-right {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.ex__hud-right {
+  pointer-events: auto;
+  justify-content: flex-end;
+}
+
+.ex__keyhint,
+.ex__pill {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding: 0.5em 1.1em;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(4, 6, 13, 0.55);
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+
+.ex__pill {
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color var(--speed) var(--ease),
+    color var(--speed) var(--ease);
+}
+
+.ex__pill:hover {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+}
+
+.ex__pill[aria-pressed='true'] {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+}
+
+@media (pointer: coarse) {
+  .ex__hud-left {
+    display: none;
+  }
+}
+
+/* --- touch joystick ---------------------------------------------------------- */
+
+.ex__joystick {
+  position: absolute;
+  width: 116px;
+  height: 116px;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(242, 237, 225, 0.28);
+  border-radius: 50%;
+  background: rgba(4, 6, 13, 0.32);
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.ex__joystick-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(242, 237, 225, 0.42);
+  border-radius: 50%;
+  background: rgba(242, 237, 225, 0.16);
+}
+
+/* --- pause overlay ------------------------------------------------------------- */
+
+.ex__pause {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(4, 6, 13, 0.82);
+  backdrop-filter: blur(8px);
+}
+
+.ex__pause .ex__card {
+  width: min(30rem, 100%);
+  padding: clamp(2rem, 5vw, 3.25rem);
+  text-align: center;
+  background: var(--night-900);
+  border: 1px solid var(--line-strong);
+  box-shadow: var(--shadow-deep);
+}
+
+.ex__pause h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-3);
+  margin: 0.6rem 0 1.6rem;
+}
+
+/* --- artwork info panel ----------------------------------------------------------- */
+
+.ex__info {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 8;
+  width: min(27rem, 100vw);
+  height: 100%;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  padding-top: clamp(3.2rem, 6vw, 4rem);
+  overflow-y: auto;
+  background: rgba(7, 10, 20, 0.95);
+  border-left: 1px solid var(--line-strong);
+  backdrop-filter: blur(14px);
+  animation: ex-panel 420ms var(--ease) both;
+}
+
+@keyframes ex-panel {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.ex__info-close {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color var(--speed) var(--ease),
+    color var(--speed) var(--ease);
+}
+
+.ex__info-close:hover {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+}
+
+.ex__info-media {
+  margin-bottom: 1.4rem;
+}
+
+.ex__info-media img {
+  display: block;
+  width: 100%;
+  max-height: 42vh;
+  object-fit: contain;
+  background: var(--night-850);
+  border: 1px solid var(--line);
+}
+
+.ex__info h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-2);
+  line-height: 1.15;
+  margin: 0.5rem 0 0.3rem;
+}
+
+.ex__info-artist {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step-0);
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.ex__info-body p {
+  color: var(--ink-soft);
+  font-size: var(--step-0);
+  line-height: 1.75;
+  margin-bottom: 0.9em;
+}
+
+.ex__badge {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  border: 1px dashed var(--gold-dim);
+  border-radius: 999px;
+  padding: 0.4em 1em;
+}
+
+.ex__info .btn {
+  margin-top: 1.4rem;
+}
+
+@media (max-width: 640px) {
+  .ex__info {
+    top: auto;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    max-height: 74vh;
+    border-left: none;
+    border-top: 1px solid var(--line-strong);
+    animation-name: ex-sheet;
+  }
+
+  @keyframes ex-sheet {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* --- static fallback list (no WebGL, no JS) ---------------------------------------- */
+
+.ex__fallback {
+  padding: var(--section-y) 0;
+}
+
+.ex__fallback .lede {
+  margin-top: 1rem;
+}
+
+.ex__fallback-room {
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+}
+
+.ex__fallback-room h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-2);
+  margin-bottom: 0.4rem;
+}
+
+.ex__fallback-room > p {
+  color: var(--ink-muted);
+  max-width: var(--measure);
+  margin-bottom: 1.4rem;
+}
+
+.ex__fallback-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.ex__fallback-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 150px) 1fr;
+  gap: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.ex__fallback-list img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  background: var(--night-850);
+}
+
+.ex__fallback-list h4 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-1);
+  margin-bottom: 0.15rem;
+}
+
+.ex__fallback-artist {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--gold);
+  font-size: var(--step-0);
+  margin-bottom: 0.5rem;
+}
+
+.ex__fallback-list p {
+  color: var(--ink-muted);
+  font-size: var(--step-0);
+  line-height: 1.7;
+}
+
+.ex__fallback-list a {
+  color: var(--gold);
+  font-size: var(--step--1);
+  letter-spacing: 0.1em;
+  text-decoration: none;
+}
+
+.ex__fallback-list a:hover {
+  text-decoration: underline;
+}
+
+.ex__fallback-empty {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+@media (max-width: 560px) {
+  .ex__fallback-list li {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+}
+
+/* --- page state --------------------------------------------------------------------- */
+
+body.ex-open {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ex__roomintro,
+  .ex__info {
+    animation: none;
+  }
+
+  .ex__crosshair {
+    transition: none;
+  }
+
+  .ex__spinner {
+    animation-duration: 2s;
+  }
+}

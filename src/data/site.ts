@@ -44,6 +44,7 @@ export const primaryNav = [
   { label: 'Objects', href: '/collectible-objects' },
   { label: 'History', href: '/art-history' },
   { label: 'Collections', href: '/shop' },
+  { label: 'Exhibition', href: '/exhibition' },
   { label: 'About', href: '/about' },
 ];
 
@@ -57,6 +58,7 @@ export const footerNav = [
       { label: 'Artists', href: '/artists' },
       { label: 'Collectible Objects', href: '/collectible-objects' },
       { label: 'Art History', href: '/art-history' },
+      { label: 'Exhibition', href: '/exhibition' },
       { label: 'Resources', href: '/resources' },
     ],
   },

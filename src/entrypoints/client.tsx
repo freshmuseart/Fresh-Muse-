@@ -13,6 +13,7 @@ import '@fontsource/ibm-plex-sans/400.css';
 import '@fontsource/ibm-plex-sans/500.css';
 import '../styles/components.css';
 import '../styles/pages.css';
+import '../styles/exhibition.css';
 
 /* --- mobile menu (was Header.astro's inline script) ------------------------ */
 
@@ -256,7 +257,15 @@ function initCommandCenter(): void {
   void import('../../command-center/ui/panel').then((m) => m.initPanel());
 }
 
+/* --- exhibition (three.js loads ONLY on /exhibition/) ----------------------- */
+
+function initExhibition(): void {
+  if (!document.getElementById('exhibition-root')) return;
+  void import('../exhibition/engine').then((m) => m.startExhibition());
+}
+
 initMobileMenu();
 initNightSky();
 initNewsletter();
 initCommandCenter();
+initExhibition();
